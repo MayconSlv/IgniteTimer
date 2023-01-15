@@ -5,6 +5,11 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 62.5%;
   }
 
+  :root {
+    outline: none;
+    border: none;
+  }
+
   * {
     margin: 0;
     padding: 0;
