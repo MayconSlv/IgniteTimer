@@ -5,9 +5,8 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 62.5%;
   }
 
-  :root {
+  :focus {
     outline: none;
-    border: none;
   }
 
   * {
