@@ -1,17 +1,26 @@
 import { Play } from "phosphor-react";
-import { useState } from "react";
-import { ButtonCountdownStart, CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, Separator, TaskInput } from "./styles";
+import { useEffect, useState } from "react";
+import {
+  ButtonCountdownStart,
+  CountdownContainer,
+  FormContainer,
+  HomeContainer,
+  MinutesAmountInput,
+  Separator,
+  TaskInput,
+} from "./styles";
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { differenceInSeconds } from 'date-fns'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
-  minutesAmount: 
+  minutesAmount:
     zod.number()
-    .min(5, 'O tempo de intervalo precisa de 5 mínutos no mínimo.')
-    .max(60, 'O tempo de intervalo precisa ser de 60 mínutos no máximo.'),
+      .min(5, 'O tempo de intervalo precisa de 5 mínutos no mínimo.')
+      .max(60, 'O tempo de intervalo precisa ser de 60 mínutos no máximo.'),
 })
 
 // interface NewCycleFormData {
@@ -25,6 +34,7 @@ interface Cycle {
   id: string
   task: string
   minutesAmount: number
+  startDate: Date
 }
 
 export function Home() {
@@ -39,7 +49,20 @@ export function Home() {
       task: '',
       minutesAmount: 0,
     }
-  })  
+  })
+
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+
+  useEffect(() => {
+    if(activeCycle) {
+      setInterval(() => {
+        setAmountSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.startDate),
+        )
+      }, 1000)
+    }
+  }, [activeCycle])
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     const id = String(new Date().getTime())
@@ -48,6 +71,7 @@ export function Home() {
       id: id,
       minutesAmount: data.minutesAmount,
       task: data.task,
+      startDate: new Date(),
     }
 
     setCycles((state) => [...state, newCycle])
@@ -56,7 +80,6 @@ export function Home() {
     reset()
   }
 
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
@@ -76,25 +99,25 @@ export function Home() {
       <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
         <FormContainer>
           <label htmlFor="text">Vou trabalhar em</label>
-          <TaskInput 
-            id="text" 
-            placeholder="Dê um nome para o seu projeto" 
+          <TaskInput
+            id="text"
+            placeholder="Dê um nome para o seu projeto"
             list="taskSuggestion"
             {...register('task')}
           />
 
           <datalist id="taskSuggestion">
-            <option value="Projeto 1"/>
-            <option value="Projeto 2"/>
-            <option value="Projeto 3"/>
-            <option value="Projeto 4"/>
+            <option value="Projeto 1" />
+            <option value="Projeto 2" />
+            <option value="Projeto 3" />
+            <option value="Projeto 4" />
           </datalist>
 
           <label htmlFor="minutesAmount">durante</label>
-          <MinutesAmountInput 
-            type="number" 
-            id="minutesAmount" 
-            placeholder="00" 
+          <MinutesAmountInput
+            type="number"
+            id="minutesAmount"
+            placeholder="00"
             step={5}
             max={60}
             min={5}
