@@ -7,7 +7,7 @@
 
 ##
 
-<img src="ignite-timer.gif"/>
+<img src="./src/assets/ignite-timer.gif"/>
 
 ## 🔨Ferramentas:
  - JavaScript
