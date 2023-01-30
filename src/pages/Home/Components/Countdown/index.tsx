@@ -11,10 +11,9 @@ export function Countdown() {
     activeCycleId, 
     markCurrentCycleAsFinished, 
     amountSecondsPassed, 
-    setSecondsPassed 
+    setSecondsPassed,
+    totalSeconds
   } =   useContext(CyclesContext)
-
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
   useEffect(() => {
     let interval: number;
